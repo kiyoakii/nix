@@ -123,9 +123,10 @@
       kate
       tdesktop
       thunderbird
+      discord
     ];
-    openssh.authorizedKeys.keyFiles = [
- 
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt/0z8gv87aLnAl3sdA7YF+IEGSriwOgT4z18q8ErD4QuUuTuwlqg2B97QdEaK/xFSi0WiCL3xQaWQSfu5YFEXW5wwvPCbaPzkXMqbUBp/y3QP2DjWKuZNukTDlRvjt2bE5tRA3W9GxQbmbQ7u/BmEpWkwdyNKfXK5XEI+LkhSsKrZ2NZ/IW9KoicSkkqlu2omQxEUdbADujRYQK0n/uTVfdOXMLtJ8AudOAfjWGiFr5RcfNuYvhRae2GTmjzlFFhviEsoEXTE3cXA8oIkENB80j/6cDc3Hi236i1cFRkZxuAtuDgxKFiSl1x8Bu0mlov33UzsfQ76Nk0VD/FKDSAB/ahKjmsGI3ElW5jnECPtpqiom7wbTBIe4nrubjIMUfp/eID+OGMamVcfSsVyM2IdCGN/rcv1bXP6bQuYsqXadKITLdU6ZkbpRAqPhivPwBj4f9UATvmnFBuc20ZuwFiBrl4e7cd+y5tzfQIyjMlBDcNai2+IDk8+R/ue+RdWnAS7TfW3qiwd+5Ibc9qeBlTPZNKjzXGHqI4XK0NsFcbZWUtBX3peDulHTh3duODbibFy9EEr4LxDhFB5SOblLRAERrFj3h2yD1CmEzXwrVFE08DbKko2ZkmF433oW2d9RSn5Tmzz2wF8q3zR7hSzy+z8UAqgpaJCJ7JglbtcLE4NFw== lijin110110@gmail.com" 
     ];
   };
   
@@ -140,8 +141,8 @@
     vscode
     nginx
     btop
-    discord
     p7zip
+    cifs-utils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -153,13 +154,61 @@
   };
 
   # List services that you want to enable:
-
+  
+  
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
     settings = {
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
+    };
+  };
+  
+  services.samba-wsdd.enable = true;
+  services.samba = {
+    package = pkgs.samba4Full;
+    enable = true;
+    enableNmbd = true;
+    securityType = "user";
+    extraConfig = ''
+      security = user 
+      #use sendfile = yes
+      #max protocol = smb2
+    '';
+    shares = {
+      public = {
+        path = "/mnt/hdd/movies";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+      };
+    }; 
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+    publish = {
+      enable = true;
+      addresses = true;
+      domain = true;
+      hinfo = true;
+      userServices = true;
+      workstation = true;
+    };
+    extraServiceFiles = {
+      smb = ''
+        <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+        <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+        <service-group>
+          <name replace-wildcards="yes">%h</name>
+          <service>
+            <type>_smb._tcp</type>
+            <port>445</port>
+          </service>
+        </service-group>
+      '';
     };
   };
   # Open ports in the firewall.
@@ -193,7 +242,11 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    settings.experimental-features = [ "nix-command" "flakes" ];
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      system-features = [ "kvm" ];
+      warn-dirty = false;
+    };
   };
  
  

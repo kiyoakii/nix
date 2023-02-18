@@ -24,6 +24,9 @@
       enable = true;
       userEmail = "lijin110110@gmail.com";
       userName  = "Jin Li";
+      signing.signByDefault = false;
+      signing.key = null;
+
       extraConfig = {
         credential.helper = "${
             pkgs.git.override { withLibsecret = true; }
