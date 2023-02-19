@@ -34,9 +34,21 @@
       };
     };
     gitui.enable = true;
+    
+    fish = {
+      enable = true;
+      plugins = with pkgs.fishPlugins; [ 
+        sponge fzf-fish forgit grc bass
+      ];
+    };
   };
 
   home.packages = with pkgs; [ 
     htop
+    grc
+    fzf
+    btop
+    p7zip
+    helix
   ];
 }
