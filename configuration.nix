@@ -121,12 +121,9 @@
     description = "Jin Li";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.fish;
-    packages = with pkgs; [
-      firefox
-      kate
-      tdesktop
-      thunderbird
-      discord
+    packages = builtins.concatLists [
+      (with pkgs; [ firefox kate tdesktop thunderbird discord ])
+      (with pkgs.fishPlugins; [sponge fzf-fish forgit grc bass ])
     ];
 
     openssh.authorizedKeys.keys = [

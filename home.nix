@@ -34,12 +34,12 @@
       };
     };
     gitui.enable = true;
-    
+   
     fish = {
       enable = true;
-      plugins = with pkgs.fishPlugins; [ 
-        sponge fzf-fish forgit grc bass
-      ];
+      interactiveShellInit = ''
+        bind -k nul accept-autosuggestion
+      '';
     };
   };
 
