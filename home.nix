@@ -39,8 +39,8 @@
       enable = true;
       interactiveShellInit = ''
         set fish_greeting # Disable greeting;
+        any-nix-shell fish --info-right | source;
         bind -k nul accept-autosuggestion;
-        set -U grcplugin_ls --color -l
       '';
       plugins = [];
       

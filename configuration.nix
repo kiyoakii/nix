@@ -154,6 +154,7 @@
       nginx
       htop
       cifs-utils
+      any-nix-shell
     ];
     
     shells = with pkgs; [ fish ];
