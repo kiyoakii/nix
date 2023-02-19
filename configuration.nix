@@ -123,7 +123,7 @@
     shell = pkgs.fish;
     packages = builtins.concatLists [
       (with pkgs; [ firefox kate tdesktop thunderbird discord ])
-      (with pkgs.fishPlugins; [sponge fzf-fish forgit grc bass ])
+      (with pkgs.fishPlugins; [ sponge fzf-fish grc bass ])
     ];
 
     openssh.authorizedKeys.keys = [
@@ -139,6 +139,8 @@
     systemPackages = with pkgs; [
       fish 
       vim
+      grc
+      fzf
       helix
       git
       wget

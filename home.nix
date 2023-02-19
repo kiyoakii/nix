@@ -38,17 +38,29 @@
     fish = {
       enable = true;
       interactiveShellInit = ''
-        bind -k nul accept-autosuggestion
+        set fish_greeting # Disable greeting;
+        bind -k nul accept-autosuggestion;
+        set -U grcplugin_ls --color -l
       '';
+      plugins = [];
+      
+    };
+    
+    helix = {
+      enable = true;
+      settings = {
+        theme = "bogster";
+        keys.normal = {};   
+        editor = { 
+          true-color = true;
+          lsp.display-messages = true;
+        };
+      };
     };
   };
 
   home.packages = with pkgs; [ 
-    htop
-    grc
-    fzf
     btop
     p7zip
-    helix
   ];
 }
