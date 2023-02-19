@@ -31,6 +31,8 @@
   boot.kernelParams = [ "module_blacklist=i915" ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  users.defaultUserShell = pkgs.fish;
+
   networking.hostName = "Jin-NixPC"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -118,6 +120,7 @@
     isNormalUser = true;
     description = "Jin Li";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
     packages = with pkgs; [
       firefox
       kate
@@ -125,6 +128,7 @@
       thunderbird
       discord
     ];
+
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt/0z8gv87aLnAl3sdA7YF+IEGSriwOgT4z18q8ErD4QuUuTuwlqg2B97QdEaK/xFSi0WiCL3xQaWQSfu5YFEXW5wwvPCbaPzkXMqbUBp/y3QP2DjWKuZNukTDlRvjt2bE5tRA3W9GxQbmbQ7u/BmEpWkwdyNKfXK5XEI+LkhSsKrZ2NZ/IW9KoicSkkqlu2omQxEUdbADujRYQK0n/uTVfdOXMLtJ8AudOAfjWGiFr5RcfNuYvhRae2GTmjzlFFhviEsoEXTE3cXA8oIkENB80j/6cDc3Hi236i1cFRkZxuAtuDgxKFiSl1x8Bu0mlov33UzsfQ76Nk0VD/FKDSAB/ahKjmsGI3ElW5jnECPtpqiom7wbTBIe4nrubjIMUfp/eID+OGMamVcfSsVyM2IdCGN/rcv1bXP6bQuYsqXadKITLdU6ZkbpRAqPhivPwBj4f9UATvmnFBuc20ZuwFiBrl4e7cd+y5tzfQIyjMlBDcNai2+IDk8+R/ue+RdWnAS7TfW3qiwd+5Ibc9qeBlTPZNKjzXGHqI4XK0NsFcbZWUtBX3peDulHTh3duODbibFy9EEr4LxDhFB5SOblLRAERrFj3h2yD1CmEzXwrVFE08DbKko2ZkmF433oW2d9RSn5Tmzz2wF8q3zR7hSzy+z8UAqgpaJCJ7JglbtcLE4NFw== lijin110110@gmail.com" 
     ];
@@ -134,16 +138,23 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim
-    git
-    wget
-    vscode
-    nginx
-    btop
-    p7zip
-    cifs-utils
-  ];
+  environment = {
+    systemPackages = with pkgs; [
+      fish
+      vim
+      helix
+      git
+      wget
+      vscode
+      nginx
+      btop
+      p7zip
+      cifs-utils
+    ];
+    
+    shells = with pkgs; [ fish ];
+    binsh = "${pkgs.dash}/bin/dash";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -153,8 +164,7 @@
     enableSSHSupport = true;
   };
 
-  # List services that you want to enable:
-  
+  programs.fish.enable = true;
   
   # Enable the OpenSSH daemon.
   services.openssh = {

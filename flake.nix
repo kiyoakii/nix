@@ -1,5 +1,5 @@
 {
-  description = "A very basic flake";
+  description = "Jin's Nix PC";
   
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -7,9 +7,10 @@
       url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim.url = github:pta2002/nixvim;
   };
 
-  outputs = { self, nixpkgs, home-manager }: 
+  outputs = { self, nixpkgs, home-manager, ...}: 
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
