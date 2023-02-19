@@ -24,13 +24,11 @@
       enable = true;
       userEmail = "lijin110110@gmail.com";
       userName  = "Jin Li";
-      signing.signByDefault = false;
-      signing.key = null;
+      signing.signByDefault = true;
+      signing.key = "/home/nabokov/.ssh/id_ed25519";
 
       extraConfig = {
-        credential.helper = "${
-            pkgs.git.override { withLibsecret = true; }
-          }/bin/git-credential-libsecret";
+        gpg.format = "ssh";
       };
     };
     gitui.enable = true;
