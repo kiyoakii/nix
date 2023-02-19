@@ -133,7 +133,7 @@
     ];
 
     openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCt/0z8gv87aLnAl3sdA7YF+IEGSriwOgT4z18q8ErD4QuUuTuwlqg2B97QdEaK/xFSi0WiCL3xQaWQSfu5YFEXW5wwvPCbaPzkXMqbUBp/y3QP2DjWKuZNukTDlRvjt2bE5tRA3W9GxQbmbQ7u/BmEpWkwdyNKfXK5XEI+LkhSsKrZ2NZ/IW9KoicSkkqlu2omQxEUdbADujRYQK0n/uTVfdOXMLtJ8AudOAfjWGiFr5RcfNuYvhRae2GTmjzlFFhviEsoEXTE3cXA8oIkENB80j/6cDc3Hi236i1cFRkZxuAtuDgxKFiSl1x8Bu0mlov33UzsfQ76Nk0VD/FKDSAB/ahKjmsGI3ElW5jnECPtpqiom7wbTBIe4nrubjIMUfp/eID+OGMamVcfSsVyM2IdCGN/rcv1bXP6bQuYsqXadKITLdU6ZkbpRAqPhivPwBj4f9UATvmnFBuc20ZuwFiBrl4e7cd+y5tzfQIyjMlBDcNai2+IDk8+R/ue+RdWnAS7TfW3qiwd+5Ibc9qeBlTPZNKjzXGHqI4XK0NsFcbZWUtBX3peDulHTh3duODbibFy9EEr4LxDhFB5SOblLRAERrFj3h2yD1CmEzXwrVFE08DbKko2ZkmF433oW2d9RSn5Tmzz2wF8q3zR7hSzy+z8UAqgpaJCJ7JglbtcLE4NFw== lijin110110@gmail.com" 
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4Z6mzX2DV63IPg2vhAQfK9xw2+i4rQkrVpn6WgZW4E nabokov@Jin's-Air" 
     ];
   };
   
