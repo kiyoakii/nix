@@ -33,6 +33,12 @@
 
   users.defaultUserShell = pkgs.fish;
 
+  fileSystems = {
+    "/mnt/hdd".device = "/dev/sda1";
+    "/home/nabokov/old-home".device = "/dev/nvme0n1p3";
+    "/home/nabokov/old-sys".device = "/dev/nvme0n1p1";
+  };
+  
   networking.hostName = "Jin-NixPC"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
