@@ -7,10 +7,9 @@
       url = github:nix-community/home-manager;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixvim.url = github:pta2002/nixvim;
   };
 
-  outputs = { self, nixpkgs, home-manager, ...}: 
+  outputs = { self, nixpkgs, home-manager, helix, ...}: 
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -33,7 +32,6 @@
               };
             }
           ];
-
         };
       };
 

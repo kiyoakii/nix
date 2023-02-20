@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -70,6 +70,7 @@
   };
 
   fonts.fonts = with pkgs; [
+   # lxgw-neoxihei
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
@@ -80,7 +81,10 @@
     dina-font
     proggyfonts
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    #(flakes.fonts.defaultPackage.${system})
   ];
+  
+      
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -264,6 +268,10 @@
       system-features = [ "kvm" ];
       warn-dirty = false;
     };
+    extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true
+    '';
   };
  
  

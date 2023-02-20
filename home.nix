@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   # Home Manager needs a bit of information about you and the
@@ -33,6 +33,11 @@
     };
     gitui.enable = true;
    
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     fish = {
       enable = true;
       interactiveShellInit = ''
@@ -52,13 +57,20 @@
         editor = { 
           true-color = true;
           lsp.display-messages = true;
+          cursor-shape.insert = "bar";
         };
       };
     };
   };
 
-  home.packages = with pkgs; [ 
-    btop
-    p7zip
+  fonts.fontconfig.enable = true;
+
+  home.packages = builtins.concatLists [
+    ( with pkgs; [ 
+        btop
+        p7zip
+        kitty
+      ]
+    )
   ];
 }
