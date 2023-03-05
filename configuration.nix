@@ -84,24 +84,29 @@
     #(flakes.fonts.defaultPackage.${system})
   ];
   
-      
-
+       
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.videoDrivers = ["nvidia"];
-  hardware.opengl.enable = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
-
-  # Configure keymap in X11
   services.xserver = {
+    enable = true;
+    videoDrivers = ["nvidia"];
+    displayManager = {
+      sddm.enable = true;
+      #gdm.wayland = false;
+      #gdm.enable = true;
+    };
+    desktopManager = {
+      plasma5.enable = true;
+    };    
+
     layout = "us";
     xkbVariant = "";
   };
 
+  hardware.opengl.enable = true;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+  # Enable the KDE Plasma Desktop Environment.
+  #services.xserver.displayManager.
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -129,7 +134,7 @@
   users.users.nabokov = {
     isNormalUser = true;
     description = "Jin Li";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "docker" "networkmanager" "wheel" ];
     shell = pkgs.fish;
     packages = builtins.concatLists [
       (with pkgs; [ firefox kate tdesktop thunderbird discord ])
@@ -147,12 +152,18 @@
   # $ nix search wget
   environment = {
     systemPackages = with pkgs; [
+      man-pages
+      posix_man_pages
       fish 
       vim
       grc
       fzf
       helix
       git
+      sway
+      pciutils
+      qemu_kvm
+      virtiofsd
       wget
       vscode
       nginx
@@ -256,6 +267,10 @@
     })
   ];
  
+  virtualisation.docker = {
+    enable = true;
+  };
+
   nix = {
     settings.auto-optimise-store = true;
     gc = {
@@ -272,6 +287,11 @@
       keep-outputs = true
       keep-derivations = true
     '';
+  };
+
+  documentation = {
+    dev.enable = true;
+    doc.enable = true;
   };
  
  
