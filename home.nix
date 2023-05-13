@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-
+{ config, pkgs, lib, inputs, ... }:
 {
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
@@ -61,6 +60,13 @@
         };
       };
     };
+
+    wayland.windowManager.hyprland = {
+      enable = true;
+    };
+
+    eww.enable = true;
+    
   };
 
   fonts.fontconfig.enable = true;
@@ -70,6 +76,14 @@
         btop
         p7zip
         kitty
+        zotero
+        acpi
+        brightnessctl
+        playerctl
+
+        eww-wayland
+        wl-clipboard
+        grim
       ]
     )
   ];

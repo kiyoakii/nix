@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ inputs, config, pkgs, lib, ... }:
 
 {
   imports =
@@ -11,8 +11,6 @@
     ];
  
   # Bootloader.
-  #boot.loader.systemd-boot.enable = true;
-
   boot.loader = {
     efi = {
       canTouchEfiVariables = true;
@@ -39,15 +37,85 @@
     "/home/nabokov/old-sys".device = "/dev/nvme0n1p1";
   };
   
-  networking.hostName = "Jin-NixPC"; # Define your hostname.
+  networking = {
+    hostName = "Jin-NixPC"; # Define your hostname.
+    nameservers = [ "127.0.0.1" "::1" ];
+    networkmanager = {
+      enable = true; 
+      dns = "none";
+    };
+    extraHosts = ''
+    '';
+  };
+
+  services.nginx = {
+    enable = false;
+    #package = pkgs.nginxStable.override { 
+    #  openssl = pkgs.libressl;
+    #};
+
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+    sslProtocols = "TLSv1 TLSv1.1 TLSv1.2";
+
+    virtualHosts."music.lijin.org" = {
+      enableACME = true;
+      forceSSL = true;
+      locations."/" = {
+        proxyPass = "https://music.163.com";
+        proxyWebsockets = true;
+        extraConfig = ''
+          proxy_set_header Host $host;
+          #proxy_set_header X-Real-IP 103.45.75.128;
+          #proxy_set_header X-Forwarded-For 103.45.75.128;
+          proxy_ssl_server_name on;
+          proxy_intercept_errors on;
+          error_page 301 302 307 = @handle_redirects;
+        '';
+      };
+      locations."@handle_redirects" = {
+        extraConfig = ''
+          #set $original_uri $uri;
+          set $orig_loc '$upstream_http_location';
+          resolver 8.8.8.8;
+          proxy_pass $orig_loc;
+        '';
+      };
+
+
+      extraConfig = ''
+      '';
+    };
+
+    commonHttpConfig = ''
+    '';
+  };
+
+  services.dnscrypt-proxy2 = {
+    enable = true;
+    upstreamDefaults = true;
+    
+    settings = {
+      require_dnssec = true;
+    };
+  };
+
+  systemd.services.dnscrypt-proxy2.serviceConfig = {
+    StateDirectory = "dnscrypt-proxy";
+  };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  #systemd.user.services.kanshi = {
+  #  description = "kanshi daemon";
+  #  serviceConfig = {
+  #    Type = "simple";
+  #    ExecStart = ''${pkgs.kanshi}/bin/kanshi -c kanshi_config_file'';
+  #  };
+  #};
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -85,25 +153,40 @@
   ];
   
        
+  #services.greetd = {
+  #  enable = true;
+  #  settings = {
+  #    default_session = {
+  #      command = "${pkgs.greetd.greetd}/bin/agreety --cmd Hyprland";
+  #    };
+  #  };
+  #};
+
+  
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
     videoDrivers = ["nvidia"];
     displayManager = {
-      sddm.enable = true;
-      #gdm.wayland = false;
-      #gdm.enable = true;
+      #sddm.enable = true;
+      #gdm.wayland = true;
+      gdm.enable = true;
     };
     desktopManager = {
-      plasma5.enable = true;
+      #plasma5.enable = true;
+      gnome.enable = true;
     };    
 
     layout = "us";
     xkbVariant = "";
   };
 
-  hardware.opengl.enable = true;
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+  };
   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  hardware.nvidia.modesetting.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
   #services.xserver.displayManager.
@@ -114,6 +197,7 @@
   sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  security.polkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -126,6 +210,10 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
+#  security.acme.acceptTerms = true;
+#  security.acme.defaults.email = "lijin110110@gmail.com";
+#  security.pki.certificateFiles = [ "/root/charles.pem" ];
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -152,6 +240,7 @@
   # $ nix search wget
   environment = {
     systemPackages = with pkgs; [
+      home-manager
       man-pages
       posix_man_pages
       fish 
@@ -159,33 +248,62 @@
       grc
       fzf
       helix
+      kitty
       git
-      sway
       pciutils
       qemu_kvm
       virtiofsd
       wget
       vscode
-      nginx
       htop
       cifs-utils
       any-nix-shell
+      nginxMainline
+      charles
+      parted
+
+      wayland
+      rofi-wayland
+      eww-wayland
+      dunst
     ];
     
     shells = with pkgs; [ fish ];
     binsh = "${pkgs.dash}/bin/dash";
+    sessionVariables = rec {
+      LIBVA_DRIVER_NAME = "nvidia";
+      #XDG_SESSION_TYPE = "wayland";
+      GBM_BACKEND = "nvidia-open-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      WLR_NO_HARDWARE_CURSORS = "1";
+      #GDK_SCALE = "2";
+      XCURSOR_SIZE = "32";
+    };
   };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
   programs = {
+    xwayland.enable = true;
+
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
 
     fish.enable = true;
+
+    hyprland = {
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      enable = true;
+      xwayland.enable = true;
+      xwayland.hidpi = true;
+      nvidiaPatches = true;
+    };
+
+    dconf.enable = true;
+
   };
   
   # Enable the OpenSSH daemon.
